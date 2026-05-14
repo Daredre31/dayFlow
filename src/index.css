@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+    --bg:#0D0F14;
+    --surface : #151820 ; /*for side topbr and cards */
+    --surface2: #1C2030 ; /* code blocks and input background*/
+    --surface3: #232840 ; /*for active nav and hover state*/
+    --border : #2A3050 ; /* for all borders and divider*/
+    --accent: #4F7EFF; /*button active state and links*/
+    --accent2: #7B5EFF; /*personal category*/
+    --green :#2DD4A0; /*success task and health category*/
+    --amber :#F5A623; /*for star rating , warning and study category*/
+    --red:#FF5C6A; /*overdue , error state , delete action*/
+    --text:#E8ECFF; /*for text primarily, like heading , task title*/
+    --secondary:#8890B0; /*for text secondarily, like labels , description*/
+    --tertiary:#50587A; /*for text tertiarily, like hints , timestamp , paceholder*/
+}
