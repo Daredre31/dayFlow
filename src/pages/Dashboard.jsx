@@ -103,7 +103,7 @@ const [dfilter , setDfilter] = useState();
         <div className='md:w-[70%] border border-border border-collapse max-h-max rounded-md bg-surface2 '>
            <div className='flex justify-between border border-border p-2'>
             <span className='text-text'>Today's tasks</span>
-            <span onClick={} className='text-accent'>+ add task</span>
+            <span  className='text-accent'>+ add task</span>
            </div>
            
            <div className='flex gap-3 mt-3 p-2'>
