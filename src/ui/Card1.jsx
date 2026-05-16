@@ -5,13 +5,13 @@ import { taskObject } from '../Mockdata/datas';
 
 
 
-const Card1 = () => {
+const Card1 = ({flexW ,width , height , gap}) => {
   const [checked , setChecked] = useState(false)
   const {task} = useTaskContext()
   return (
-    <div className='flex flex-wrap gap-2'>
+    <div className={`flex ${flexW} ${gap}`}>
         {task.map(items => (
-          <div className='bg-surface2 w-[48%] h-24  px-2 rounded-md border border-border'>
+          <div className={`bg-surface2 ${width}   px-2 rounded-md border border-border `}>
               <div className='flex justify-between'>
                 <span
                 onClick={() => setChecked(!checked)} className='px-2  border border-border rounded-md cursor-pointer text-center text-green'>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { BiMenuAltLeft } from "react-icons/bi";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { IoMdTime } from "react-icons/io";
@@ -6,14 +6,24 @@ import { RiErrorWarningLine } from "react-icons/ri"
 import { RiHomeLine } from "react-icons/ri";
 import { TiChartAreaOutline } from "react-icons/ti";
 import { MdMoreHoriz } from "react-icons/md";
+import { useTaskContext } from '../context/Taskcontroller';
+import DayCard from '../ui/DayCard';
+import Card1 from '../ui/Card1';
 
 
 
-const Taskcards = {
+
+
+const filterBtn = ["All" , "Active" , "Done" , "high Priority"]
+
+const Layout = () => {
+
+  const {task} = useTaskContext();
+  const Taskcards = {
   logo : <BiMenuAltLeft />,
-  totalTask : 24 ,
+  totalTask : task.length ,
   title: "Total task",
-  addedToday : `+3 today`
+  addedToday : task.length
 
 }
 
@@ -36,16 +46,14 @@ const overDueCard = {
   warning : "Action needed"
 }
 
-// const taskAddcat = ['work' , 'study' , 'health' , 'personal'] ;
-// const taskAdd
-
-
-const Layout = () => {
+const [dfilter , setDfilter] = useState();
   return (
 
-     
-    <div className=' lg:h-[1000px] h-screen  w-full bg-bg relative '>
-       <div className='lg:flex gap-3 text-white  mt-8 grid grid-cols-2 p-3 '>
+    <div className=' lg:h-[1000px] h-screen  w-full overflow-scroll bg-bg relative '>
+        <div className='lg:hidden p-2'>
+          <DayCard width={'w-full'}/>
+        </div>
+       <div className='lg:flex gap-3 text-white  mt-4 grid grid-cols-2 p-3 '>
         <div className='border border-border rounded-md lg:w-64 bg-surface   '>
           <div className='flex justify-between p-2 text-sm'>
             <span className='bg-surface3 w-8 h-8 p-1 text-2xl text-accent border border-border rounded-md'>{Taskcards.logo}</span>
@@ -89,7 +97,30 @@ const Layout = () => {
         
        </div>
 
-      
+      {/* the section dashboard table */}
+
+      <div className='mt-2 flex flex-col md:flex-row p-2'>
+        <div className='md:w-[70%] border border-border border-collapse max-h-max rounded-md bg-surface2 '>
+           <div className='flex justify-between border border-border p-2'>
+            <span className='text-text'>Today's tasks</span>
+            <span onClick={} className='text-accent'>+ add task</span>
+           </div>
+           
+           <div className='flex gap-3 mt-3 p-2'>
+             {filterBtn.map(btn => (
+              <button 
+              onClick={()=>setDfilter(btn)} className={`border border-border px-2 text-sm rounded-xl text-text
+                ${dfilter === btn ? 'bg-accent' : 'bg-inherit'}
+              `}>
+                {btn}
+              </button>
+             ))}
+           </div>
+
+            <Card1 flexW={'flex-col'} height={'h-12'} width={'w-full'}/>
+        </div>
+        <div></div>
+      </div>
     </div>
   )
 }
