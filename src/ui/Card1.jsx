@@ -61,10 +61,9 @@ const Card1 = ({ flexW = 'flex-wrap', width = 'w-full', height = 'h-auto', gap =
           </div>
 
           {/* Task Title */}
-          <div className='mb-3 flex-grow overflow-hidden'>
+          <div className='mb-3 flex-grow'>
             <span className={`
               text-sm font-medium text-text
-              block truncate
               ${checkedItems[item.id] ? 'line-through opacity-60' : ''}
             `}>
               {item.title}
@@ -72,14 +71,14 @@ const Card1 = ({ flexW = 'flex-wrap', width = 'w-full', height = 'h-auto', gap =
           </div>
 
           {/* Footer: Category and Delete */}
-          <div className='flex justify-between items-center gap-2 pt-2 border-t border-border min-w-0'>
-            <span className='text-xs bg-accent px-3 py-1 rounded-md text-surface2 font-medium truncate'>
+          <div className='flex justify-between items-center gap-2 pt-2 border-t border-border'>
+            <span className='text-xs bg-accent px-3 py-1 rounded-md text-surface2 font-medium'>
               {item.category}
             </span>
             <button
               onClick={() => handleDel(item.id)}
               className={`
-                text-xs px-3 py-1 rounded-md font-medium whitespace-nowrap
+                text-xs px-3 py-1 rounded-md font-medium
                 bg-red text-surface2
                 hover:bg-red/80 transition-colors duration-200
                 active:scale-95
