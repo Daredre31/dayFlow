@@ -23,7 +23,7 @@ const Alltask = () => {
 
          <div className='p-2 '>
            <div>
-            <Card1 flexW={'flex-wrap'} height={'h-24'} width={'w-[48%]'}/>
+           <Card1 variant='grid' />
            </div>
           
          </div>

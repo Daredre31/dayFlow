@@ -117,7 +117,7 @@ const [dfilter , setDfilter] = useState();
              ))}
            </div>
 
-            <Card1 flexW={'flex-col'} height={'h-12'} width={'w-full'}/>
+            <Card1 variant='list' />
         </div>
         <div></div>
       </div>

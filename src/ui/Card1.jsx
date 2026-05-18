@@ -1,35 +1,94 @@
 import React, { useState } from 'react'
 import { useTaskContext } from '../context/Taskcontroller';
 
-const Card1 = ({ flexW = 'flex-wrap', width = 'w-full', height = 'h-auto', gap = 'gap-4' }) => {
+const Card1 = ({ variant = 'grid' }) => {
   const { task, deleteTask } = useTaskContext();
   const [checkedItems, setCheckedItems] = useState({});
 
   const handleCheck = (taskId) => {
-    setCheckedItems(prev => ({
-      ...prev,
-      [taskId]: !prev[taskId]
-    }));
+    setCheckedItems(prev => ({ ...prev, [taskId]: !prev[taskId] }));
   };
 
-  const handleDel = (taskId) => {
-    deleteTask(taskId);
-  };
+  // ── LIST variant (Dashboard) ─────────────────────────────────────
+  if (variant === 'list') {
+    return (
+      <div className='flex flex-col gap-2 p-2'>
+        {task.map(item => (
+          <div
+            key={item.id}
+            className='flex items-center gap-3 px-3 py-2 rounded-md
+                       bg-surface border border-border
+                       hover:border-accent transition-all duration-200'
+          >
+            {/* Checkbox */}
+            <button
+              onClick={() => handleCheck(item.id)}
+              className={`
+                w-5 h-5 flex-shrink-0 flex items-center justify-center
+                rounded border-2 transition-all duration-200
+                cursor-pointer text-xs font-semibold
+                ${checkedItems[item.id]
+                  ? 'bg-green border-green text-surface2'
+                  : 'border-border bg-surface3 hover:border-green'
+                }
+              `}
+            >
+              {checkedItems[item.id] ? '✓' : ''}
+            </button>
 
+            {/* Title */}
+            <span className={`
+              flex-1 text-sm font-medium text-text truncate
+              ${checkedItems[item.id] ? 'line-through opacity-50' : ''}
+            `}>
+              {item.title}
+            </span>
+
+            {/* Category */}
+            <span className='text-xs bg-accent px-2 py-0.5 rounded text-surface2 font-medium flex-shrink-0'>
+              {item.category}
+            </span>
+
+            {/* Priority */}
+            <span className={`
+              text-xs font-semibold px-2 py-0.5 rounded flex-shrink-0
+              ${item.priority === 'high'
+                ? 'bg-red text-surface2'
+                : item.priority === 'medium'
+                ? 'bg-amber text-surface2'
+                : 'bg-green text-surface2'
+              }
+            `}>
+              {item.priority}
+            </span>
+
+            {/* Delete */}
+            <button
+              onClick={() => deleteTask(item.id)}
+              className='text-xs px-2 py-0.5 rounded font-medium flex-shrink-0
+                         bg-red text-surface2 hover:bg-red/80
+                         transition-colors duration-200 active:scale-95'
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // ── GRID variant (AllTask) ───────────────────────────────────────
   return (
-    <div className={`flex ${flexW} ${gap}`}>
+    <div className='flex flex-wrap gap-3'>
       {task.map(item => (
         <div
           key={item.id}
-          className={`
-            bg-surface2 ${width} ${height}
-            px-4 py-3 rounded-lg border border-border
-            hover:border-accent transition-all duration-200
-            hover:shadow-md
-            flex flex-col justify-between
-          `}
+          className='bg-surface2 w-[48%] h-auto
+                     px-4 py-3 rounded-lg border border-border
+                     hover:border-accent transition-all duration-200
+                     flex flex-col justify-between'
         >
-          {/* Header: Checkbox and Priority */}
+          {/* Header */}
           <div className='flex justify-between items-center mb-3'>
             <button
               onClick={() => handleCheck(item.id)}
@@ -39,28 +98,26 @@ const Card1 = ({ flexW = 'flex-wrap', width = 'w-full', height = 'h-auto', gap =
                 cursor-pointer font-semibold text-sm
                 ${checkedItems[item.id]
                   ? 'bg-green border-green text-surface2'
-                  : 'border-border bg-surface3 text-text hover:border-green'
+                  : 'border-border bg-surface3 hover:border-green'
                 }
               `}
             >
               {checkedItems[item.id] ? '✓' : ''}
             </button>
-            <span
-              className={`
-                text-xs font-semibold px-3 py-1 rounded-md
-                ${item.priority === 'high'
-                  ? 'bg-red text-surface2'
-                  : item.priority === 'medium'
-                  ? 'bg-amber text-surface2'
-                  : 'bg-green text-surface2'
-                }
-              `}
-            >
+            <span className={`
+              text-xs font-semibold px-3 py-1 rounded-md
+              ${item.priority === 'high'
+                ? 'bg-red text-surface2'
+                : item.priority === 'medium'
+                ? 'bg-amber text-surface2'
+                : 'bg-green text-surface2'
+              }
+            `}>
               {item.priority}
             </span>
           </div>
 
-          {/* Task Title */}
+          {/* Title */}
           <div className='mb-3 flex-grow'>
             <span className={`
               text-sm font-medium text-text
@@ -70,19 +127,16 @@ const Card1 = ({ flexW = 'flex-wrap', width = 'w-full', height = 'h-auto', gap =
             </span>
           </div>
 
-          {/* Footer: Category and Delete */}
+          {/* Footer */}
           <div className='flex justify-between items-center gap-2 pt-2 border-t border-border'>
             <span className='text-xs bg-accent px-3 py-1 rounded-md text-surface2 font-medium'>
               {item.category}
             </span>
             <button
-              onClick={() => handleDel(item.id)}
-              className={`
-                text-xs px-3 py-1 rounded-md font-medium
-                bg-red text-surface2
-                hover:bg-red/80 transition-colors duration-200
-                active:scale-95
-              `}
+              onClick={() => deleteTask(item.id)}
+              className='text-xs px-3 py-1 rounded-md font-medium
+                         bg-red text-surface2 hover:bg-red/80
+                         transition-colors duration-200 active:scale-95'
             >
               Delete
             </button>
