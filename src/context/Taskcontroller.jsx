@@ -18,9 +18,14 @@ export const Taskcontroller = ({children}) => {
       ...taskData,
         }
         setTask((prev) => [newtask , ...prev])
-    } , [setTask])
+    } , [setTask]);
+
+    const deleteTask = useCallback((id) => {
+       setTask(prev => prev.filter((item) => item.id !==id))
+       
+    }, [setTask])
   return (
-    <taskContext.Provider value={{ task, addTask }}>
+    <taskContext.Provider value={{ task, addTask , deleteTask }}>
       {children}
     </taskContext.Provider>
   )

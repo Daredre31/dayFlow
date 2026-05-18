@@ -36,6 +36,9 @@ const Taskform = ({closeForm}) => {
       addTask(alldata)
     }
 
+     const handleDelete = () => {
+       
+     }
     
   return (
     <div className=''>
