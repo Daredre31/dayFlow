@@ -34,14 +34,14 @@ const Taskform = ({ closeForm }) => {
 
   useEffect(() => { titleRef.current?.focus(); }, []);
 
-  // live re-validate a field once user has submitted once
+  
   const validate = (fields = { title, category, priority, duedate }) => {
     const e = {};
-    if (!fields.title.trim())           e.title    = 'Task title is required.';
+    if (!fields.title.trim())e.title    = 'Task title is required.';
     else if (fields.title.trim().length < 3) e.title = 'Title must be at least 3 characters.';
-    if (!fields.category)               e.category = 'Pick a category.';
-    if (!fields.priority)               e.priority = 'Pick a priority level.';
-    if (!fields.duedate)                e.duedate  = 'Due date is required.';
+    if (!fields.category)e.category = 'Pick a category.';
+    if (!fields.priority) e.priority = 'Pick a priority level.';
+    if (!fields.duedate)e.duedate  = 'Due date is required.';
     return e;
   };
 
@@ -69,7 +69,6 @@ const Taskform = ({ closeForm }) => {
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm'>
       <div className='bg-surface2 border border-border md:w-[420px] w-[320px] rounded-xl shadow-xl'>
 
-        {/* ── Header ─────────────────────────────────────── */}
         <div className='flex justify-between items-center px-4 py-3 border-b border-border'>
           <span className='text-text font-semibold text-sm'>Add new task</span>
           <button
@@ -82,7 +81,7 @@ const Taskform = ({ closeForm }) => {
 
         <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-4' noValidate>
 
-          {/* ── Title ──────────────────────────────────────── */}
+         
           <div className='flex flex-col gap-1'>
             <div className='flex justify-between items-center'>
               <label className='text-secondary text-xs font-medium'>
@@ -113,7 +112,7 @@ const Taskform = ({ closeForm }) => {
             )}
           </div>
 
-          {/* ── Category ───────────────────────────────────── */}
+         
           <div className='flex flex-col gap-2'>
             <label className='text-secondary text-xs font-medium'>
               Category <span className='text-red'>*</span>
@@ -151,7 +150,7 @@ const Taskform = ({ closeForm }) => {
             )}
           </div>
 
-          {/* ── Priority ───────────────────────────────────── */}
+         
           <div className='flex flex-col gap-2'>
             <label className='text-secondary text-xs font-medium'>
               Priority <span className='text-red'>*</span>
@@ -191,7 +190,7 @@ const Taskform = ({ closeForm }) => {
             )}
           </div>
 
-          {/* ── Date + Time ────────────────────────────────── */}
+      
           <div className='flex gap-3'>
             <div className='flex flex-col gap-1 flex-1'>
               <label className='text-secondary text-xs font-medium'>
@@ -230,7 +229,7 @@ const Taskform = ({ closeForm }) => {
             </div>
           </div>
 
-          {/* ── Note ───────────────────────────────────────── */}
+        
           <div className='flex flex-col gap-1'>
             <label className='text-secondary text-xs font-medium'>
               Note <span className='text-tertiary'>(optional)</span>
@@ -247,7 +246,7 @@ const Taskform = ({ closeForm }) => {
             />
           </div>
 
-          {/* ── Actions ────────────────────────────────────── */}
+       
           <div className='flex justify-between gap-3 pt-1'>
             <Button bg='bg-surface3' width='w-[40%]' logo='✕' text='Cancel'   onClick={closeForm}     />
             <Button bg='bg-accent'   width='w-[57%]' logo='+' text='Add Task'  onClick={handleSubmit}  />

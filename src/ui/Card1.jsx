@@ -1,16 +1,14 @@
 import React, { useState } from 'react'
 import { useTaskContext } from '../context/Taskcontroller';
 
-const Card1 = ({ variant = 'grid' }) => {
-  const { task, deleteTask } = useTaskContext();
-  const [checkedItems, setCheckedItems] = useState({});
+const Card1 = ({ state = 'grid' }) => {
+  const { task, deleteTask , setCheckedItems ,
+     checkedItems, completdCheck , setCompletdCheck , handleCheck} = useTaskContext();
+ 
+  
 
-  const handleCheck = (taskId) => {
-    setCheckedItems(prev => ({ ...prev, [taskId]: !prev[taskId] }));
-  };
-
-  // ── LIST variant (Dashboard) ─────────────────────────────────────
-  if (variant === 'list') {
+  
+  if (state === 'list') {
     return (
       <div className='flex flex-col gap-2 p-2'>
         {task.map(item => (
@@ -20,7 +18,7 @@ const Card1 = ({ variant = 'grid' }) => {
                        bg-surface border border-border
                        hover:border-accent transition-all duration-200'
           >
-            {/* Checkbox */}
+            {/* logic for checking */}
             <button
               onClick={() => handleCheck(item.id)}
               className={`
@@ -36,20 +34,16 @@ const Card1 = ({ variant = 'grid' }) => {
               {checkedItems[item.id] ? '✓' : ''}
             </button>
 
-            {/* Title */}
             <span className={`
               flex-1 text-sm font-medium text-text truncate
-              ${checkedItems[item.id] ? 'line-through opacity-50' : ''}
+              ${checkedItems[item.id]   ? 'line-through opacity-50' : ''}
             `}>
               {item.title}
             </span>
 
-            {/* Category */}
             <span className='text-xs bg-accent px-2 py-0.5 rounded text-surface2 font-medium flex-shrink-0'>
               {item.category}
             </span>
-
-            {/* Priority */}
             <span className={`
               text-xs font-semibold px-2 py-0.5 rounded flex-shrink-0
               ${item.priority === 'high'
@@ -61,8 +55,6 @@ const Card1 = ({ variant = 'grid' }) => {
             `}>
               {item.priority}
             </span>
-
-            {/* Delete */}
             <button
               onClick={() => deleteTask(item.id)}
               className='text-xs px-2 py-0.5 rounded font-medium flex-shrink-0
@@ -77,7 +69,7 @@ const Card1 = ({ variant = 'grid' }) => {
     );
   }
 
-  // ── GRID variant (AllTask) ───────────────────────────────────────
+  // task grid in alltask component
   return (
     <div className='flex flex-wrap gap-3'>
       {task.map(item => (

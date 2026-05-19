@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { useTaskContext } from '../context/Taskcontroller'
 
 
 const dateRR = new Date()
@@ -8,9 +9,21 @@ const dateRR = new Date()
      month: dateRR.toLocaleString('default', { month: 'long' }),
      year: dateRR.getFullYear() 
  }
-const DayCard = ({width}) => {
 
-     const [progress , setProgress] = useState(40);
+
+const DayCard = ({width}) => {
+   const {task , completdCheck} = useTaskContext()
+     
+     const [progress , setProgress] = useState(0)
+
+     useEffect(()=> {
+        if(task.length === 0){
+            setProgress(0)
+        } else {
+             const ctPercent = (completdCheck * 100)/task.length
+             setProgress(ctPercent)
+        }
+     } ,[task , completdCheck])
   return (
     <div>
         <div className='flex flex-col gap-2'>
@@ -27,7 +40,7 @@ const DayCard = ({width}) => {
                 </div>
                  <div className='flex justify-between px-2'>
                     <span className='text-xs'>daily progress</span>
-                    <span className='text-xs'>{progress}%</span>
+                    <span className='text-xs'>{Math.round(progress)}%</span>
                 </div>
                 <div className='w-[95%] h-2 bg-gray-400 mx-auto rounded-full mt-1'>
                     <div className=' h-full bg-white rounded-full' style={{ width: `${progress}%` }}></div>

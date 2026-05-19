@@ -6,14 +6,18 @@ import Taskform from './ui/Taskform'
 import Card1 from './ui/Card1'
 import Alltask from './pages/Alltask'
 import Layout from './pages/Dashboard'
+// import Register from './components/Register'
+// import Login from './components/Login'
 
 
 
 const App = () => {
   return (
     <div className='h-screen'>
-    
+     
   <Routes>
+    {/* <Route path='/' element={ <Register />} />
+    <Route path='/login' element = {<Login />} /> */}
     <Route path='/' element= {<Home />}>
         <Route path='dashboard' element={<Layout />} />
         <Route path='alltask' element={  <Alltask /> } />

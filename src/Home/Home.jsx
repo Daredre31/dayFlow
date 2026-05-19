@@ -1,9 +1,9 @@
 import React from 'react'
 import SideBar from '../components/layout/SideBar'
-// import Layout from '../components/layout/Layout'
 import Topbar from '../components/layout/Topbar'
-import { Outlet } from 'react-router-dom'
 import MobileNav from '../components/layout/MobileNav'
+import Layout from '../pages/Dashboard'
+import { Outlet } from 'react-router-dom'
 
 const Home = () => {
   return (

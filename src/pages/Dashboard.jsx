@@ -9,6 +9,7 @@ import { MdMoreHoriz } from "react-icons/md";
 import { useTaskContext } from '../context/Taskcontroller';
 import DayCard from '../ui/DayCard';
 import Card1 from '../ui/Card1';
+import TaskDonut from '../components/task/TaskDonut';
 
 
 
@@ -18,7 +19,9 @@ const filterBtn = ["All" , "Active" , "Done" , "high Priority"]
 
 const Layout = () => {
 
-  const {task} = useTaskContext();
+  const {task , checkedItems, setCheckedItems , completdCheck , setCompletdCheck} = useTaskContext();
+
+  
   const Taskcards = {
   logo : <BiMenuAltLeft />,
   totalTask : task.length ,
@@ -29,14 +32,14 @@ const Layout = () => {
 
 const completedCard = {
   logo: <IoCheckmarkOutline />,
-  TotalCpmpleted : 15,
+  TotalCompleted : completdCheck,
   title: "completed",
   rate : "62%"
 }
 const progressCard = {
   logo: <IoMdTime />,
   inProgress : 6,
-  title: "completed",
+  title: "completed",  
   due : "due totay"
 }
 const overDueCard = {
@@ -49,7 +52,7 @@ const overDueCard = {
 const [dfilter , setDfilter] = useState();
   return (
 
-    <div className=' lg:h-[1000px] h-screen  w-full overflow-scroll bg-bg relative '>
+    <div className=' h-[1000px]  w-full overflow-y-scroll-scroll bg-bg relative '>
         <div className='lg:hidden p-2'>
           <DayCard width={'w-full'}/>
         </div>
@@ -70,7 +73,7 @@ const [dfilter , setDfilter] = useState();
             <span className='bg-surface2 text-green   max-w-fit h-6 p-1 text-xs font-semibold  rounded-md'>{completedCard.rate}</span>
           </div>
           <div className='flex flex-col text-sm gap-1 p-2'>
-            <span className='text-xl'>{completedCard.TotalCpmpleted}</span>
+            <span className='text-xl'>{completedCard.TotalCompleted}</span>
             <span className='text-xs text-secondary'>{completedCard.title}</span>
           </div>
         </div>
@@ -97,9 +100,9 @@ const [dfilter , setDfilter] = useState();
         
        </div>
 
-      {/* the section dashboard table */}
+      
 
-      <div className='mt-2 flex flex-col md:flex-row p-2'>
+      <div className='mt-2 flex flex-col md:flex-row p-2 gap-4'>
         <div className='md:w-[70%] border border-border border-collapse max-h-max rounded-md bg-surface2 '>
            <div className='flex justify-between border border-border p-2'>
             <span className='text-text'>Today's tasks</span>
@@ -117,12 +120,14 @@ const [dfilter , setDfilter] = useState();
              ))}
            </div>
 
-            <Card1 variant='list' />
+            <Card1 state='list' />
         </div>
-        <div></div>
+        <div>
+          <TaskDonut />
+        </div>
       </div>
     </div>
   )
-}
+}  
 
 export default Layout

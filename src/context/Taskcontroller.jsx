@@ -1,5 +1,5 @@
 
-import React, { createContext, useCallback, useContext } from 'react'
+import React, { createContext, useCallback, useContext, useState } from 'react'
 
 import { taskObject } from "../Mockdata/datas";
 import { useLocalStorage } from '../CustomHook/UselocalStorage';
@@ -8,6 +8,15 @@ const taskContext = createContext()
 export const Taskcontroller = ({children}) => {
 
     const [task , setTask] = useLocalStorage('dayFlowtask' , taskObject);
+     const [checkedItems, setCheckedItems] = useState({});
+    //  const [completdCheck , setCompletdCheck] = useState(0)
+
+     const handleCheck = (taskId) => {
+  setCheckedItems(prev => ({ ...prev, [taskId]: !prev[taskId] }));
+};
+
+const completdCheck = Object.values(checkedItems).filter(Boolean).length;
+
 
     const addTask = useCallback((taskData) =>{
       const  newtask ={
@@ -25,8 +34,9 @@ export const Taskcontroller = ({children}) => {
        
     }, [setTask])
   return (
-    <taskContext.Provider value={{ task, addTask , deleteTask }}>
-      {children}
+    <taskContext.Provider value={{ task, addTask , deleteTask,checkedItems 
+    , setCheckedItems , completdCheck ,  handleCheck}}>
+      {children} ,
     </taskContext.Provider>
   )
 }
