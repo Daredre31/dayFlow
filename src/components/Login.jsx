@@ -26,7 +26,7 @@ const Login = () => {
 
     try {
 
-      const res = await api.post('/livelogin' , formData)
+      const res = await api.post('/server/livelogin' , formData)
       
 
       localStorage.setItem("token", res.data.token)

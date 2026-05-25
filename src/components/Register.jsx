@@ -26,7 +26,7 @@ const Register = () => {
     e.preventDefault()
 
     try {
-        const rAPI  = await api.post('/live',formData);
+        const rAPI  = await api.post('/server/live',formData);
         console.log(rAPI);
 
         if(rAPI.status === 201) {

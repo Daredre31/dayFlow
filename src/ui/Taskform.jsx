@@ -65,7 +65,7 @@ const Taskform = ({ closeForm }) => {
 
     const goin ={ title: title.trim(), category, priority, dueDate, dueTime, note }
      try {
-      const add = await  api.post('/newtask' , goin , );
+      const add = await  api.post('/server3/newtask' , goin , );
       console.log("RESPONSE:", add)
       addTask(add.data.data || add.data)
       

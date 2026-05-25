@@ -26,7 +26,7 @@ export const Taskcontroller = ({children}) => {
        }
    try {
 
-      const taskData = await api.get('/alltask');
+      const taskData = await api.get('/server3/alltask');
 
       console.log(taskData.data);
 
