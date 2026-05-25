@@ -4,6 +4,7 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { taskObject } from "../Mockdata/datas";
 
 import axios from 'axios';
+import api from './Api';
 
 const taskContext = createContext()
 export const Taskcontroller = ({children}) => {
@@ -25,14 +26,7 @@ export const Taskcontroller = ({children}) => {
        }
    try {
 
-      const taskData = await axios.get(
-         'http://localhost:8900/server3/alltask',
-         {
-            headers: {
-               Authorization: `Bearer ${token}`
-            }
-         }
-      );
+      const taskData = await api.get('/alltask');
 
       console.log(taskData.data);
 
@@ -77,7 +71,7 @@ const completdCheck = Object.values(checkedItems).filter(Boolean).length;
        
         
       try {
-        const del =await axios.delete(`http://localhost:8900/server3/deletetask/${id}`);
+        const del =await api.delete(`/deletetask/${id}`);
         setTask(prev => prev.filter((item) => item._id !==id))
       } catch (error) {
         

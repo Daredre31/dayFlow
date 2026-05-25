@@ -3,6 +3,7 @@ import { useTaskContext } from '../context/Taskcontroller';
 import { CATEGORIES, PRIORITIES } from "../Mockdata/datas";
 import Button from './Button';
 import axios from 'axios';
+import api from '../context/Api';
 
 const CATEGORY_COLORS = {
   work:     { bg: 'bg-accent/20',  border: 'border-accent',  text: 'text-accent'  },
@@ -64,11 +65,7 @@ const Taskform = ({ closeForm }) => {
 
     const goin ={ title: title.trim(), category, priority, dueDate, dueTime, note }
      try {
-      const add = await  axios.post('http://localhost:8900/server3/newtask' , goin , {
-        headers : {
-          Authorization :`Bearer ${token}`
-        }
-      });
+      const add = await  api.post('/newtask' , goin , );
       console.log("RESPONSE:", add)
       addTask(add.data.data || add.data)
       
