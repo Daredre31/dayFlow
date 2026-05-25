@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import api from '../context/Api'
 
 const Login = () => {
 
@@ -25,10 +26,8 @@ const Login = () => {
 
     try {
 
-      const res = await axios.post(
-        'http://localhost:8900/server/livelogin',
-        formData
-      )
+      const res = await api.post('/livelogin' , formData)
+      
 
       localStorage.setItem("token", res.data.token)
 

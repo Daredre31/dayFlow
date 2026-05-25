@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import api from '../context/Api'
 
 const Register = () => {
 
@@ -25,7 +26,7 @@ const Register = () => {
     e.preventDefault()
 
     try {
-        const rAPI  = await axios.post('http://localhost:8900/server/live',formData);
+        const rAPI  = await api.post('/live',formData);
         console.log(rAPI);
 
         if(rAPI.status === 201) {
