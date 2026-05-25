@@ -25,13 +25,15 @@ const Login = () => {
 
     try {
 
-      const response = await axios.post(
+      const res = await axios.post(
         'http://localhost:8900/server/livelogin',
         formData
       )
 
-      console.log(response.data)
+      localStorage.setItem("token", res.data.token)
 
+      console.log(res.data)
+  
       navigate('/home')
 
     } catch (error) {

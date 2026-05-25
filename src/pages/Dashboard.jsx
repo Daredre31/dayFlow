@@ -24,9 +24,9 @@ const Layout = () => {
   
   const Taskcards = {
   logo : <BiMenuAltLeft />,
-  totalTask : task.length ,
+  // totalTask :  
   title: "Total task",
-  addedToday : task.length
+  // addedToday :
 
 }
 

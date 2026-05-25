@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTaskContext } from '../context/Taskcontroller';
 import { CATEGORIES, PRIORITIES } from "../Mockdata/datas";
 import Button from './Button';
+import axios from 'axios';
 
 const CATEGORY_COLORS = {
   work:     { bg: 'bg-accent/20',  border: 'border-accent',  text: 'text-accent'  },
@@ -24,7 +25,7 @@ const Taskform = ({ closeForm }) => {
   const [title,    setTitle]    = useState('');
   const [category, setCategory] = useState('');
   const [priority, setPriority] = useState('');
-  const [duedate,  setDuedate]  = useState('');
+  const [dueDate,  setDueDate]  = useState('');
   const [dueTime,  setDueTime]  = useState('');
   const [note,     setNote]     = useState('');
   const [errors,   setErrors]   = useState({});
@@ -35,13 +36,13 @@ const Taskform = ({ closeForm }) => {
   useEffect(() => { titleRef.current?.focus(); }, []);
 
   
-  const validate = (fields = { title, category, priority, duedate }) => {
+  const valiDate = (fields = { title, category, priority, dueDate }) => {
     const e = {};
     if (!fields.title.trim())e.title    = 'Task title is required.';
     else if (fields.title.trim().length < 3) e.title = 'Title must be at least 3 characters.';
     if (!fields.category)e.category = 'Pick a category.';
     if (!fields.priority) e.priority = 'Pick a priority level.';
-    if (!fields.duedate)e.duedate  = 'Due date is required.';
+    if (!fields.dueDate)e.dueDate  = 'Due Date is required.';
     return e;
   };
 
@@ -49,16 +50,33 @@ const Taskform = ({ closeForm }) => {
     const val = e.target.value;
     if (val.length > MAX_TITLE) return;
     setTitle(val);
-    if (submitted) setErrors(prev => ({ ...prev, ...validate({ title: val, category, priority, duedate }) }));
+    if (submitted) setErrors(prev => ({ ...prev, ...valiDate({ title: val, category, priority, dueDate }) }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitted(true);
-    const errs = validate({ title, category, priority, duedate });
+    const errs = valiDate({ title, category, priority, dueDate });
     if (Object.keys(errs).length) { setErrors(errs); return; }
 
-    addTask({ title: title.trim(), category, priority, duedate, dueTime, note });
+     const token = localStorage.getItem('token')
+      console.log("TOKEN:", token)
+
+    const goin ={ title: title.trim(), category, priority, dueDate, dueTime, note }
+     try {
+      const add = await  axios.post('http://localhost:8900/server3/newtask' , goin , {
+        headers : {
+          Authorization :`Bearer ${token}`
+        }
+      });
+      console.log("RESPONSE:", add)
+      addTask(add.data.data || add.data)
+      
+     } catch (error) {
+      console.log(error)
+     }
+    ;
+
     closeForm();
   };
 
@@ -79,7 +97,7 @@ const Taskform = ({ closeForm }) => {
           >✕</button>
         </div>
 
-        <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-4' noValidate>
+        <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-4'>
 
          
           <div className='flex flex-col gap-1'>
@@ -127,7 +145,7 @@ const Taskform = ({ closeForm }) => {
                     type='button'
                     onClick={() => {
                       setCategory(cat);
-                      if (submitted) setErrors(prev => ({ ...prev, ...validate({ title, category: cat, priority, duedate }) }));
+                      if (submitted) setErrors(prev => ({ ...prev, ...valiDate({ title, category: cat, priority, dueDate }) }));
                     }}
                     className={`
                       px-3 py-1.5 rounded-lg border text-xs font-semibold
@@ -165,7 +183,7 @@ const Taskform = ({ closeForm }) => {
                     type='button'
                     onClick={() => {
                       setPriority(pr);
-                      if (submitted) setErrors(prev => ({ ...prev, ...validate({ title, category, priority: pr, duedate }) }));
+                      if (submitted) setErrors(prev => ({ ...prev, ...valiDate({ title, category, priority: pr, dueDate }) }));
                     }}
                     className={`
                       flex flex-col items-center justify-center
@@ -194,25 +212,25 @@ const Taskform = ({ closeForm }) => {
           <div className='flex gap-3'>
             <div className='flex flex-col gap-1 flex-1'>
               <label className='text-secondary text-xs font-medium'>
-                Due date <span className='text-red'>*</span>
+                Due Date <span className='text-red'>*</span>
               </label>
               <input
-                type='date'
-                value={duedate}
+                type='Date'
+                value={dueDate}
                 onChange={e => {
-                  setDuedate(e.target.value);
-                  if (submitted) setErrors(prev => ({ ...prev, ...validate({ title, category, priority, duedate: e.target.value }) }));
+                  setDueDate(e.target.value);
+                  if (submitted) setErrors(prev => ({ ...prev, ...valiDate({ title, category, priority, dueDate: e.target.value }) }));
                 }}
                 className={`
                   w-full bg-surface3 border rounded-md py-2 px-3
                   text-text text-sm focus:outline-none focus:border-accent
                   transition-colors duration-150
-                  ${errors.duedate ? 'border-red' : 'border-border'}
+                  ${errors.dueDate ? 'border-red' : 'border-border'}
                 `}
               />
-              {errors.duedate && (
+              {errors.dueDate && (
                 <span className='text-red text-xs flex items-center gap-1'>
-                  <span>⚠</span> {errors.duedate}
+                  <span>⚠</span> {errors.dueDate}
                 </span>
               )}
             </div>
