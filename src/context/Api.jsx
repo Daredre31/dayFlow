@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 const api = axios.create({
-    baseURL:'http:// 192.168.1.176/server3'
+    baseURL:'https://dayflowbackend-lu5s.onrender.com/server3'
 });
 
 api.interceptors.request.use((config) => {
