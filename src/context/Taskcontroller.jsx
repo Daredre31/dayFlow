@@ -71,7 +71,7 @@ const completdCheck = Object.values(checkedItems).filter(Boolean).length;
        
         
       try {
-        const del =await api.delete(`/deletetask/${id}`);
+        const del =await api.delete(`/server3/deletetask/${id}`);
         setTask(prev => prev.filter((item) => item._id !==id))
       } catch (error) {
         
