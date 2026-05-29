@@ -1,87 +1,87 @@
-
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
-
-import { taskObject } from "../Mockdata/datas";
-
-import axios from 'axios';
 import api from './Api';
 
 const taskContext = createContext()
-export const Taskcontroller = ({children}) => {
 
-     
-    const [task , setTask] = useState([]);
-     const [checkedItems, setCheckedItems] = useState({});
+export const Taskcontroller = ({ children }) => {
 
-     const token = localStorage.getItem('token');
+  const [task, setTask]               = useState([])
+  const [checkedItems, setCheckedItems] = useState({})
+  const [userName, setUserName]       = useState("")
 
-     useEffect(() => {
+  const token = localStorage.getItem('token')
 
-   const astry = async () => {
-     
+  useEffect(() => {
+    const fetchTasks = async () => {
+      if (!token) { setTask([]); return }
 
-       if(!token) {
-         setTask([])
-         return
-       }
-   try {
+      try {
+        const res = await api.get('/server3/alltask')
+        console.log('TASKS:', res.data)
 
-      const taskData = await api.get('/server3/alltask');
-
-      console.log(taskData.data);
-
-      if(Array.isArray(taskData.data.data)){
-         setTask(taskData.data.data)
-      } else {
-         setTask([])
+        if (Array.isArray(res.data.data)) {
+          setTask(res.data.data)
+        } else {
+          setTask([])
+        }
+      } catch (error) {
+        console.log(error.response?.data || error.message)
+        setTask([])
       }
+    }
 
-   } catch (error) {
+    fetchTasks()
+  }, [token])
 
-      console.log(error.response?.data || error.message)
+  const handleCheck = (taskId) => {
+    setCheckedItems(prev => ({ ...prev, [taskId]: !prev[taskId] }))
+  }
 
-      setTask([])
+  const completdCheck = Object.values(checkedItems).filter(Boolean).length
 
-   }
-
-}
-       astry()
-      
-     } , [token])
-    
-
-     const handleCheck = (taskId) => {
-  setCheckedItems(prev => ({ ...prev, [taskId]: !prev[taskId] }));
-};
-
-const completdCheck = Object.values(checkedItems).filter(Boolean).length;
-
-
-    const addTask = useCallback((taskData) =>{
-      const  newtask ={
+  const addTask = useCallback((taskData) => {
+    const newTask = {
       completed: false,
       completedAt: null,
       rating: 0,
       ...taskData,
-        }
-        setTask((prev) => [newtask , ...prev])
-    } , [token]);
+    }
+    setTask(prev => [newTask, ...prev])
+  }, [])
 
-    const deleteTask = useCallback( async (id) => {
-       
-        
-      try {
-        const del =await api.delete(`/server3/deletetask/${id}`);
-        setTask(prev => prev.filter((item) => item._id !==id))
-      } catch (error) {
-        
-      }
+  const deleteTask = useCallback(async (id) => {
+    try {
+      await api.delete(`/server3/deletetask/${id}`)
+      setTask(prev => prev.filter(item => item._id !== id))
+    } catch (error) {
+      console.log(error)
+    }
+  }, [])
 
-    }, [])
+  const updateTask = useCallback(async (id, updates) => {
+    try {
+      const res = await api.put(`/server3/updatetask/${id}`, updates)
+      console.log('UPDATE RESPONSE:', res.data) // remove this after confirming it works
+      setTask(prev => prev.map(t => t._id === id ? res.data.task : t))
+    } catch (error) {
+      console.log('UPDATE ERROR:', error)
+    }
+  }, [])
+
   return (
-    <taskContext.Provider value={{ task, addTask , deleteTask,checkedItems 
-    , setCheckedItems , completdCheck ,  handleCheck}}>
-      {children} ,
+    <taskContext.Provider value={{
+      task,
+      addTask,
+      deleteTask,
+      updateTask,
+      checkedItems,
+      setCheckedItems,
+      completdCheck,
+      handleCheck,
+      userName,
+      setUserName
+    }}>
+      {children}
     </taskContext.Provider>
   )
 }

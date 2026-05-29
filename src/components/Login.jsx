@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../context/Api'
+import { useTaskContext } from '../context/Taskcontroller'
 
 const Login = () => {
   const navigate = useNavigate()
+  const {setUserName} = useTaskContext()
 
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
@@ -49,8 +51,10 @@ const Login = () => {
     setLoading(true)
     try {
       const res = await api.post('/server/livelogin', formData)
-      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('token', res.data.token);
+      console.log(res);
       navigate('/home')
+      setUserName(res.data.data.user.name)
     } catch (error) {
       const message = error.response?.data?.message
       if (error.response?.status === 401) {
@@ -64,6 +68,8 @@ const Login = () => {
       setLoading(false)
     }
   }
+
+  
 
   return (
     <div className='w-full min-h-screen bg-white flex items-center justify-center px-4'>

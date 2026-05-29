@@ -3,12 +3,14 @@ import myLogo from '../../assets/logo3.png'
 import { useHeaderWord } from '../../context/Topbarhead'
 import { Link } from 'react-router-dom'
 import DayCard from '../../ui/DayCard'
+import { useTaskContext } from '../../context/Taskcontroller'
 
 
 
   const SideBar = () => { 
      const {word} = useHeaderWord()
      const {setWord} = useHeaderWord()
+     const {userName} = useTaskContext()
     return (
     <main className='lg:h-[100%]  hidden lg:flex flex-col justify-between border border-border bg-surface '>
     <div className=' text-white flex flex-col gap-1 px-2 '>
@@ -51,7 +53,7 @@ import DayCard from '../../ui/DayCard'
     </div>
 
     <div className='text-white p-4 border-t border-border'>
-  gsjcsbdhsdfbhdnsjkd
+   {userName}
 </div>
     
     </main>

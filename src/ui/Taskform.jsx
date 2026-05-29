@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTaskContext } from '../context/Taskcontroller';
 import { CATEGORIES, PRIORITIES } from "../Mockdata/datas";
 import Button from './Button';
-import axios from 'axios';
 import api from '../context/Api';
 
 const CATEGORY_COLORS = {
@@ -13,37 +12,39 @@ const CATEGORY_COLORS = {
 };
 
 const PRIORITY_CONFIG = {
-  high:   { color: 'text-red',    border: 'border-red',    activeBg: 'bg-red/20',    icon: '↑↑' },
-  medium: { color: 'text-amber',  border: 'border-amber',  activeBg: 'bg-amber/20',  icon: '↑'  },
-  low:    { color: 'text-green',  border: 'border-green',  activeBg: 'bg-green/20',  icon: '—'  },
+  high:   { color: 'text-red',   border: 'border-red',   activeBg: 'bg-red/20',   icon: '↑↑' },
+  medium: { color: 'text-amber', border: 'border-amber', activeBg: 'bg-amber/20', icon: '↑'  },
+  low:    { color: 'text-green', border: 'border-green', activeBg: 'bg-green/20', icon: '—'  },
 };
 
 const MAX_TITLE = 200;
 
-const Taskform = ({ closeForm }) => {
-  const { addTask } = useTaskContext();
+// editTask prop — if passed, form is in edit mode
+const Taskform = ({ closeForm, editTask = null }) => {
+  const { addTask, updateTask } = useTaskContext();
 
-  const [title,    setTitle]    = useState('');
-  const [category, setCategory] = useState('');
-  const [priority, setPriority] = useState('');
-  const [dueDate,  setDueDate]  = useState('');
-  const [dueTime,  setDueTime]  = useState('');
-  const [note,     setNote]     = useState('');
+  const isEditMode = Boolean(editTask);
+
+  // Pre-fill fields if editing, otherwise empty
+  const [title,    setTitle]    = useState(editTask?.title    ?? '');
+  const [category, setCategory] = useState(editTask?.category ?? '');
+  const [priority, setPriority] = useState(editTask?.priority ?? '');
+  const [dueDate,  setDueDate]  = useState(editTask?.dueDate  ?? '');
+  const [dueTime,  setDueTime]  = useState(editTask?.dueTime  ?? '');
+  const [note,     setNote]     = useState(editTask?.note     ?? '');
   const [errors,   setErrors]   = useState({});
   const [submitted, setSubmitted] = useState(false);
 
   const titleRef = useRef();
-
   useEffect(() => { titleRef.current?.focus(); }, []);
 
-  
   const valiDate = (fields = { title, category, priority, dueDate }) => {
     const e = {};
-    if (!fields.title.trim())e.title    = 'Task title is required.';
+    if (!fields.title.trim()) e.title = 'Task title is required.';
     else if (fields.title.trim().length < 3) e.title = 'Title must be at least 3 characters.';
-    if (!fields.category)e.category = 'Pick a category.';
+    if (!fields.category) e.category = 'Pick a category.';
     if (!fields.priority) e.priority = 'Pick a priority level.';
-    if (!fields.dueDate)e.dueDate  = 'Due Date is required.';
+    if (!fields.dueDate)  e.dueDate  = 'Due Date is required.';
     return e;
   };
 
@@ -57,24 +58,25 @@ const Taskform = ({ closeForm }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitted(true);
+
     const errs = valiDate({ title, category, priority, dueDate });
     if (Object.keys(errs).length) { setErrors(errs); return; }
 
-     const token = localStorage.getItem('token')
-      console.log("TOKEN:", token)
+    const payload = { title: title.trim(), category, priority, dueDate, dueTime, note };
 
-    const goin ={ title: title.trim(), category, priority, dueDate, dueTime, note }
-     try {
-      const add = await  api.post('/server3/newtask' , goin , );
-      console.log("RESPONSE:", add)
-      addTask(add.data.data || add.data)
-      
-     } catch (error) {
-      console.log(error)
-     }
-    ;
-
-    closeForm();
+    try {
+      if (isEditMode) {
+        
+        await updateTask(editTask._id, payload);
+      } else {
+    
+        const res = await api.post('/server3/newtask', payload);
+        addTask(res.data.data || res.data);
+      }
+      closeForm();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const titleCount = title.trim().length;
@@ -84,8 +86,11 @@ const Taskform = ({ closeForm }) => {
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm'>
       <div className='bg-surface2 border border-border md:w-[420px] w-[320px] rounded-xl shadow-xl'>
 
+        {/* Header */}
         <div className='flex justify-between items-center px-4 py-3 border-b border-border'>
-          <span className='text-text font-semibold text-sm'>Add new task</span>
+          <span className='text-text font-semibold text-sm'>
+            {isEditMode ? 'Edit task' : 'Add new task'}
+          </span>
           <button
             onClick={closeForm}
             className='w-6 h-6 flex items-center justify-center rounded
@@ -96,7 +101,7 @@ const Taskform = ({ closeForm }) => {
 
         <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-4'>
 
-         
+          {/* Title */}
           <div className='flex flex-col gap-1'>
             <div className='flex justify-between items-center'>
               <label className='text-secondary text-xs font-medium'>
@@ -115,8 +120,7 @@ const Taskform = ({ closeForm }) => {
               className={`
                 w-full bg-surface3 border rounded-md py-2 px-3
                 text-text text-sm placeholder:text-tertiary
-                focus:outline-none focus:border-accent
-                transition-colors duration-150
+                focus:outline-none focus:border-accent transition-colors duration-150
                 ${errors.title ? 'border-red' : 'border-border'}
               `}
             />
@@ -127,14 +131,14 @@ const Taskform = ({ closeForm }) => {
             )}
           </div>
 
-         
+          {/* Category */}
           <div className='flex flex-col gap-2'>
             <label className='text-secondary text-xs font-medium'>
               Category <span className='text-red'>*</span>
             </label>
             <div className='flex flex-wrap gap-2'>
               {CATEGORIES.map(cat => {
-                const cfg     = CATEGORY_COLORS[cat.toLowerCase()] ?? {};
+                const cfg = CATEGORY_COLORS[cat.toLowerCase()] ?? {};
                 const isActive = category === cat;
                 return (
                   <button
@@ -165,14 +169,14 @@ const Taskform = ({ closeForm }) => {
             )}
           </div>
 
-         
+          {/* Priority */}
           <div className='flex flex-col gap-2'>
             <label className='text-secondary text-xs font-medium'>
               Priority <span className='text-red'>*</span>
             </label>
             <div className='grid grid-cols-3 gap-2'>
               {PRIORITIES.map(pr => {
-                const cfg     = PRIORITY_CONFIG[pr.toLowerCase()] ?? {};
+                const cfg = PRIORITY_CONFIG[pr.toLowerCase()] ?? {};
                 const isActive = priority === pr;
                 return (
                   <button
@@ -205,14 +209,14 @@ const Taskform = ({ closeForm }) => {
             )}
           </div>
 
-      
+          {/* Due Date + Time */}
           <div className='flex gap-3'>
             <div className='flex flex-col gap-1 flex-1'>
               <label className='text-secondary text-xs font-medium'>
                 Due Date <span className='text-red'>*</span>
               </label>
               <input
-                type='Date'
+                type='date'
                 value={dueDate}
                 onChange={e => {
                   setDueDate(e.target.value);
@@ -244,7 +248,7 @@ const Taskform = ({ closeForm }) => {
             </div>
           </div>
 
-        
+          {/* Note */}
           <div className='flex flex-col gap-1'>
             <label className='text-secondary text-xs font-medium'>
               Note <span className='text-tertiary'>(optional)</span>
@@ -261,10 +265,16 @@ const Taskform = ({ closeForm }) => {
             />
           </div>
 
-       
+          {/* Buttons */}
           <div className='flex justify-between gap-3 pt-1'>
-            <Button bg='bg-surface3' width='w-[40%]' logo='✕' text='Cancel'   onClick={closeForm}     />
-            <Button bg='bg-accent'   width='w-[57%]' logo='+' text='Add Task'  onClick={handleSubmit}  />
+            <Button bg='bg-surface3' width='w-[40%]' logo='✕' text='Cancel'      onClick={closeForm}    />
+            <Button
+              bg={isEditMode ? 'bg-amber' : 'bg-accent'}
+              width='w-[57%]'
+              logo={isEditMode ? '' : '+'}
+              text={isEditMode ? 'Update Task' : 'Add Task'}
+              onClick={handleSubmit}
+            />
           </div>
 
         </form>
